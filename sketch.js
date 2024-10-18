@@ -32,7 +32,8 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(windowWidth, windowHeight);
+  fullscreen(true); // Enable fullscreen mode
   noStroke();
   colorMode(RGB, 255);
   textAlign(CENTER, CENTER);
@@ -103,7 +104,7 @@ class Anim_0 extends BaseAnimation {
     const x = width / 2 + 100 * cos(this.angle);
     const y = height / 2 + 100 * sin(this.angle);
     ellipse(x, y, this.size, this.size);
-    this.size += 3;
+    this.size += 3; // Slightly faster growth
     this.angle += 0.05;
     this.fadeOut();
   }
@@ -158,13 +159,13 @@ class Anim_3 extends BaseAnimation {
 class Anim_4 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.posy = height + 50; // Starting position
+    this.posy = height + 50;
   }
 
   draw() {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 70);
-    this.posy *= 0.9; // Faster descent for more impact
+    this.posy *= 0.9;
     this.fadeOut();
   }
 }
@@ -179,15 +180,14 @@ class Anim_5 extends BaseAnimation {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 50);
     rect(0, height - this.posy, width, 50);
-    this.posy *= 0.95; // Faster downward movement for a tighter feel
-    this.fadeOut();
+    this.posy *= 0.95;
   }
 }
 
 class Anim_6 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 80; // Maintain size
+    this.size = 80;
     this.x = random(width);
     this.y = random(height);
   }
@@ -203,8 +203,8 @@ class Anim_7 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.angle = 0;
-    this.size = 70; // Slightly larger size for impact
-    this.amplitude = 30; // Increased amplitude for more dynamic movement
+    this.size = 70;
+    this.amplitude = 30;
   }
 
   draw() {
@@ -228,7 +228,7 @@ class Anim_8 extends BaseAnimation {
     this.fillWithAlpha();
     noStroke();
     rect(0, height / 2 - this.height / 2, width, this.height);
-    this.height = min(this.height + 6, height); // Faster growth
+    this.height = min(this.height + 6, height);
     this.fadeOut();
   }
 }
@@ -237,7 +237,7 @@ class Anim_9 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.x = -width;
-    this.speed = 70; // Faster speed for a tighter animation
+    this.speed = 70;
     this.alpha = 255;
     this.hasCovered = false;
     this.isActive = true;
@@ -251,12 +251,12 @@ class Anim_9 extends BaseAnimation {
 
     if (!this.hasCovered) {
       rect(this.x, 0, width, height);
-      this.x += this.speed * 0.1; // Faster transition speed
+      this.x += this.speed * 0.1;
       if (this.x >= 0) {
         this.hasCovered = true;
       }
     } else {
-      this.alpha = max(0, this.alpha - 4); // Faster fade out for tighter finish
+      this.alpha = max(0, this.alpha - 4);
       if (this.alpha === 0) {
         this.isActive = false;
       } else {
@@ -281,15 +281,6 @@ const Animations = {
   9: Anim_9,
 };
 
-function touchStarted() {
-  const fs = fullscreen();
-  fullscreen(!fs);
-}
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-}
-
-function mouseMoved() {
-  // Optional: Change color of animations based on mouse position
 }
