@@ -20,15 +20,15 @@ const backgroundColors = [
 function preload() {
   // Load sounds for each set
   for (let i = 0; i <= 9; i++) {
-    samplesSets[0].push(loadSound(`sounds/Track_${i}.wav`));
+    samplesSets[0].push(loadSound(`Track_${i}.wav`));
   }
   for (let i = 12; i <= 21; i++) {
-    samplesSets[1].push(loadSound(`sounds/Alt_Track_${i}.wav`));
+    samplesSets[1].push(loadSound(`Alt_Track_${i}.wav`));
   }
   for (let i = 22; i <= 31; i++) {
-    samplesSets[2].push(loadSound(`sounds/New_Track_${i}.wav`));
+    samplesSets[2].push(loadSound(`New_Track_${i}.wav`));
   }
-  track11 = loadSound("sounds/Track_11.wav");
+  track11 = loadSound("Track_11.wav");
 }
 
 function setup() {
