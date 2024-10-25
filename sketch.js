@@ -1,24 +1,22 @@
 let samplesSets = [[], [], []];
 let animations = [];
 let currentSetIndex = 0;
-let track11; // Variable for Track_11.wav
 
-// Color Palettes for animations
+// Brighter Color Palettes for animations
 const colorPalettes = [
-  ["#261201", "#ED8008", "#315B7B", "#D8A367", "#736B1E"], // Set 1
-  ["#AAB7BF", "#E15E3E", "#D8A367", "#BEBAB0", "#292A2E"], // Set 2
-  ["#315B7B", "#736356", "#AAB7BF", "#F07032", "#F1B73A"], // Set 3
+  ["#FF6F61", "#6A5ACD", "#FFD700", "#20B2AA", "#FF4500"], // Modern Set 1
+  ["#6A5ACD", "#FF4500", "#FFD700", "#20B2AA", "#FF6F61"], // Modern Set 2
+  ["#20B2AA", "#FF6F61", "#6A5ACD", "#FF4500", "#FFD700"], // Modern Set 3
 ];
 
 // Background Colors
 const backgroundColors = [
-  "#DADCD0", // Background for Set 1
-  "#AE2F25", // Background for Set 2
-  "#261201", // Background for Set 3
+  "#F0E68C", // Light background for Set 1
+  "#4B0082", // Deep background for Set 2
+  "#2F4F4F", // Dark background for Set 3
 ];
 
 function preload() {
-  // Load sounds for each set
   for (let i = 0; i <= 9; i++) {
     samplesSets[0].push(loadSound(`Track_${i}.wav`));
   }
@@ -28,12 +26,10 @@ function preload() {
   for (let i = 22; i <= 31; i++) {
     samplesSets[2].push(loadSound(`New_Track_${i}.wav`));
   }
-  track11 = loadSound("Track_11.wav");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  fullscreen(true); // Enable fullscreen mode
   noStroke();
   colorMode(RGB, 255);
   textAlign(CENTER, CENTER);
@@ -42,27 +38,47 @@ function setup() {
 
 function draw() {
   const backgroundColor = backgroundColors[currentSetIndex];
-  background(backgroundColor); // Set background to the current set color
+  background(backgroundColor);
+
   animations.forEach((anim) => anim.draw());
 }
 
-function keyPressed() {
-  if (key === "Enter") {
-    track11.isPlaying() ? track11.stop() : track11.loop();
-  } else if (key >= "0" && key <= "9") {
-    playAnimation(key);
-  } else if (key === " ") {
-    toggleAnimationSet();
+function touchStarted() {
+  handleInteraction(touches[0].x);
+}
+
+function mousePressed() {
+  if (isComputer()) {
+    handleInteraction(mouseX);
   }
 }
 
-function playAnimation(key) {
+function keyPressed() {
+  if (key >= "0" && key <= "9") {
+    const index = parseInt(key);
+    playAnimation(index);
+  } else if (key === " ") {
+    toggleAnimationSet(); // Toggle set with space bar
+  }
+}
+
+function handleInteraction(x) {
+  const index = floor(map(x, 0, width, 0, 11)); // Map to 11 blocks (0-9 + toggle)
+
+  if (index === 10) {
+    toggleAnimationSet(); // Toggle set if touching the last block
+  } else if (index >= 0 && index < 10) {
+    playAnimation(index); // Play animation corresponding to the block
+  }
+}
+
+function playAnimation(index) {
   const samples = samplesSets[currentSetIndex];
   const colors = colorPalettes[currentSetIndex];
-  const animationClass = Animations[key];
+  const animationClass = Animations[index];
 
   if (animationClass) {
-    samples[parseInt(key)].play();
+    samples[index].play();
     const newAnim = new animationClass(random(colors));
     animations.push(newAnim);
     if (animations.length > 10) animations.shift(); // Limit animations
@@ -79,7 +95,7 @@ class BaseAnimation {
   constructor(color) {
     this.color = color;
     this.alpha = 255;
-    this.fadeRate = 2; // Slightly faster fade out for a tighter feel
+    this.fadeRate = 2; // Fade out rate
   }
 
   fadeOut() {
@@ -95,7 +111,7 @@ class BaseAnimation {
 class Anim_0 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 10; // Start smaller for smoother feel
+    this.size = 20; // Start larger for a bubbly feel
     this.angle = random(TWO_PI);
   }
 
@@ -104,8 +120,8 @@ class Anim_0 extends BaseAnimation {
     const x = width / 2 + 100 * cos(this.angle);
     const y = height / 2 + 100 * sin(this.angle);
     ellipse(x, y, this.size, this.size);
-    this.size += 3; // Slightly faster growth
-    this.angle += 0.05;
+    this.size += 5; // Faster growth
+    this.angle += 0.1; // Increased rotation speed
     this.fadeOut();
   }
 }
@@ -113,13 +129,13 @@ class Anim_0 extends BaseAnimation {
 class Anim_1 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 0;
+    this.size = 20; // Start larger
   }
 
   draw() {
     this.fillWithAlpha();
-    rect(width / 4, height / 2 - 25, this.size, 70);
-    this.size += 3;
+    rect(width / 4, height / 2 - 25, this.size, 100);
+    this.size += 5; // Faster increase
     this.fadeOut();
   }
 }
@@ -128,7 +144,7 @@ class Anim_2 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.angle = 0;
-    this.size = 250;
+    this.size = 300; // Start larger
   }
 
   draw() {
@@ -139,7 +155,7 @@ class Anim_2 extends BaseAnimation {
     rectMode(CENTER);
     rect(0, 0, this.size, this.size);
     pop();
-    this.angle += 0.05;
+    this.angle += 0.1; // Increased rotation speed
     this.fadeOut();
   }
 }
@@ -159,13 +175,13 @@ class Anim_3 extends BaseAnimation {
 class Anim_4 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.posy = height + 50;
+    this.posy = height + 50; // Starting position
   }
 
   draw() {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 70);
-    this.posy *= 0.9;
+    this.posy *= 0.9; // Faster descent
     this.fadeOut();
   }
 }
@@ -180,14 +196,14 @@ class Anim_5 extends BaseAnimation {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 50);
     rect(0, height - this.posy, width, 50);
-    this.posy *= 0.95;
+    this.posy *= 0.95; // Faster downward movement
   }
 }
 
 class Anim_6 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 80;
+    this.size = 80; // Maintain size
     this.x = random(width);
     this.y = random(height);
   }
@@ -203,17 +219,20 @@ class Anim_7 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.angle = 0;
-    this.size = 70;
-    this.amplitude = 30;
+    this.size = 100; // Start larger
+    this.amplitude = 50; // Increased amplitude for more dynamic movement
   }
 
   draw() {
     this.fillWithAlpha();
     const x = width / 2 + this.size * cos(this.angle);
-    const y = height / 2 + this.size * sin(this.angle) + this.amplitude * sin(frameCount * 0.1);
-    ellipse(x, y, 140, 140);
-    this.angle += 0.05;
-    this.size += 0.5;
+    const y =
+      height / 2 +
+      this.size * sin(this.angle) +
+      this.amplitude * sin(frameCount * 0.1);
+    ellipse(x, y, this.size * 1.5, this.size * 1.5); // Bigger ellipses
+    this.angle += 0.1; // Increased rotation speed
+    this.size += 0.5; // Slightly faster size increase
     this.fadeOut();
   }
 }
@@ -228,7 +247,7 @@ class Anim_8 extends BaseAnimation {
     this.fillWithAlpha();
     noStroke();
     rect(0, height / 2 - this.height / 2, width, this.height);
-    this.height = min(this.height + 6, height);
+    this.height = min(this.height + 6, height); // Faster growth
     this.fadeOut();
   }
 }
@@ -237,7 +256,7 @@ class Anim_9 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.x = -width;
-    this.speed = 70;
+    this.speed = 70; // Faster speed
     this.alpha = 255;
     this.hasCovered = false;
     this.isActive = true;
@@ -251,12 +270,12 @@ class Anim_9 extends BaseAnimation {
 
     if (!this.hasCovered) {
       rect(this.x, 0, width, height);
-      this.x += this.speed * 0.1;
+      this.x += this.speed * 0.1; // Faster transition speed
       if (this.x >= 0) {
         this.hasCovered = true;
       }
     } else {
-      this.alpha = max(0, this.alpha - 4);
+      this.alpha = max(0, this.alpha - 4); // Faster fade out
       if (this.alpha === 0) {
         this.isActive = false;
       } else {
@@ -283,4 +302,9 @@ const Animations = {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+// Function to detect if the user is on a computer
+function isComputer() {
+  return !/Mobi|Android/i.test(navigator.userAgent);
 }
