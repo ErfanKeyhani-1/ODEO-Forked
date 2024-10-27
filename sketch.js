@@ -4,16 +4,16 @@ let currentSetIndex = 0;
 
 // Brighter Color Palettes for animations
 const colorPalettes = [
-  ["#FF6F61", "#6A5ACD", "#FFD700", "#20B2AA", "#FF4500"], // Modern Set 1
-  ["#6A5ACD", "#FF4500", "#FFD700", "#20B2AA", "#FF6F61"], // Modern Set 2
-  ["#20B2AA", "#FF6F61", "#6A5ACD", "#FF4500", "#FFD700"], // Modern Set 3
+  ["#E46A43", "#9B8E32", "#BD96AD", "#DBF585", "#86BEEB"], // Modern Set 1
+  ["#86BEEB", "#DBF585", "#9B8E32", "#BD96AD", "#E46A43"], // Modern Set 2
+  ["#86BEEB", "#BD96AD", "#E46A43", "#DBF585", "#9B8E32"], // Modern Set 3
 ];
 
 // Background Colors
 const backgroundColors = [
-  "#F0E68C", // Light background for Set 1
-  "#4B0082", // Deep background for Set 2
-  "#2F4F4F", // Dark background for Set 3
+  "#E3E4D7", // Light background for Set 1
+  "#EDCCB4", // Deep background for Set 2
+  "#444B37", // Dark background for Set 3
 ];
 
 function preload() {
