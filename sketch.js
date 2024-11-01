@@ -18,13 +18,25 @@ const backgroundColors = [
 
 function preload() {
   for (let i = 0; i <= 9; i++) {
-    samplesSets[0].push(loadSound(`Track_${i}.wav`));
+    samplesSets[0].push(loadSound(`1st_${i}.mp3`, () => {
+      console.log(`Loaded 1st_${i}.mp3`);
+    }, (err) => {
+      console.error(`Failed to load 1st_${i}.mp3`, err);
+    }));
   }
-  for (let i = 12; i <= 21; i++) {
-    samplesSets[1].push(loadSound(`Alt_Track_${i}.wav`));
+  for (let i = 11; i <= 20; i++) {
+    samplesSets[1].push(loadSound(`2nd_${i}.mp3`, () => {
+      console.log(`Loaded 2nd_${i}.mp3`);
+    }, (err) => {
+      console.error(`Failed to load 2nd_${i}.mp3`, err);
+    }));
   }
-  for (let i = 22; i <= 31; i++) {
-    samplesSets[2].push(loadSound(`New_Track_${i}.wav`));
+  for (let i = 21; i <= 30; i++) {
+    samplesSets[2].push(loadSound(`3rd_${i}.mp3`, () => {
+      console.log(`Loaded 3rd_${i}.mp3`);
+    }, (err) => {
+      console.error(`Failed to load 3rd_${i}.mp3`, err);
+    }));
   }
 }
 
@@ -82,6 +94,8 @@ function playAnimation(index) {
     const newAnim = new animationClass(random(colors));
     animations.push(newAnim);
     if (animations.length > 10) animations.shift(); // Limit animations
+  } else {
+    console.error(`Animation class for index ${index} is undefined.`);
   }
 }
 
