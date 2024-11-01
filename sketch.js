@@ -17,27 +17,25 @@ const backgroundColors = [
 ];
 
 function preload() {
-  for (let i = 0; i <= 9; i++) {
-    samplesSets[0].push(loadSound(`1st_${i}.mp3`, () => {
-      console.log(`Loaded 1st_${i}.mp3`);
-    }, (err) => {
-      console.error(`Failed to load 1st_${i}.mp3`, err);
-    }));
-  }
-  for (let i = 11; i <= 20; i++) {
-    samplesSets[1].push(loadSound(`2nd_${i}.mp3`, () => {
-      console.log(`Loaded 2nd_${i}.mp3`);
-    }, (err) => {
-      console.error(`Failed to load 2nd_${i}.mp3`, err);
-    }));
-  }
-  for (let i = 21; i <= 30; i++) {
-    samplesSets[2].push(loadSound(`3rd_${i}.mp3`, () => {
-      console.log(`Loaded 3rd_${i}.mp3`);
-    }, (err) => {
-      console.error(`Failed to load 3rd_${i}.mp3`, err);
-    }));
-  }
+  const loadSounds = (prefix, start, end, index) => {
+    for (let i = start; i <= end; i++) {
+      samplesSets[index].push(
+        loadSound(
+          `${prefix}_${i}.mp3`,
+          () => {
+            console.log(`Loaded ${prefix}_${i}.mp3`);
+          },
+          (err) => {
+            console.error(`Failed to load ${prefix}_${i}.mp3`, err);
+          }
+        )
+      );
+    }
+  };
+
+  loadSounds("1st", 0, 9, 0);
+  loadSounds("2nd", 11, 20, 1);
+  loadSounds("3rd", 21, 30, 2);
 }
 
 function setup() {
@@ -49,10 +47,9 @@ function setup() {
 }
 
 function draw() {
-  const backgroundColor = backgroundColors[currentSetIndex];
-  background(backgroundColor);
-
+  background(backgroundColors[currentSetIndex]);
   animations.forEach((anim) => anim.draw());
+  animations = animations.filter((anim) => anim.alpha > 0); // Remove faded-out animations
 }
 
 function touchStarted() {
@@ -125,7 +122,7 @@ class BaseAnimation {
 class Anim_0 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 20; // Start larger for a bubbly feel
+    this.size = 20;
     this.angle = random(TWO_PI);
   }
 
@@ -134,8 +131,8 @@ class Anim_0 extends BaseAnimation {
     const x = width / 2 + 100 * cos(this.angle);
     const y = height / 2 + 100 * sin(this.angle);
     ellipse(x, y, this.size, this.size);
-    this.size += 5; // Faster growth
-    this.angle += 0.1; // Increased rotation speed
+    this.size += 5;
+    this.angle += 0.1;
     this.fadeOut();
   }
 }
@@ -211,6 +208,7 @@ class Anim_5 extends BaseAnimation {
     rect(0, this.posy - 50, width, 50);
     rect(0, height - this.posy, width, 50);
     this.posy *= 0.95; // Faster downward movement
+    this.fadeOut();
   }
 }
 
