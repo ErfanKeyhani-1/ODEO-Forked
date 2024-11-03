@@ -16,6 +16,14 @@ const backgroundColors = [
   "#444B37", // Dark background for Set 3
 ];
 
+function resumeAudioContext() {
+    if (getAudioContext().state !== 'running') {
+        getAudioContext().resume().then(() => {
+            console.log('Audio Context resumed on iOS');
+        });
+    }
+}
+
 function preload() {
   const loadSounds = (prefix, start, end, index) => {
     for (let i = start; i <= end; i++) {
@@ -44,7 +52,10 @@ function setup() {
   colorMode(RGB, 255);
   textAlign(CENTER, CENTER);
   textSize(24);
+  resumeAudioContext();
 }
+
+
 
 function draw() {
   background(backgroundColors[currentSetIndex]);
@@ -54,12 +65,14 @@ function draw() {
 
 function touchStarted() {
   handleInteraction(touches[0].x);
+  resumeAudioContext();
 }
 
 function mousePressed() {
   if (isComputer()) {
     handleInteraction(mouseX);
   }
+  resumeAudioContext();
 }
 
 function keyPressed() {
@@ -87,6 +100,7 @@ function playAnimation(index) {
   const animationClass = Animations[index];
 
   if (animationClass) {
+    resumeAudioContext();
     samples[index].play();
     const newAnim = new animationClass(random(colors));
     animations.push(newAnim);
