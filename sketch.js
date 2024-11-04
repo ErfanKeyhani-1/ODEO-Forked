@@ -105,6 +105,7 @@ function keyPressed() {
     const index = parseInt(key);
     playAnimation(index);
   } else if (key === " ") {
+    event.preventDefault();
     toggleAnimationSet(); // Toggle set with space bar
   }
 }
