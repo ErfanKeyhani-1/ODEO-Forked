@@ -1,25 +1,24 @@
 let samplesSets = [[], [], []];
 let animations = [];
 let currentSetIndex = 0;
-
-// Brighter Color Palettes for animations
 const colorPalettes = [
-  ["#E46A43", "#9B8E32", "#BD96AD", "#DBF585", "#86BEEB"], // Modern Set 1
-  ["#86BEEB", "#DBF585", "#9B8E32", "#BD96AD", "#E46A43"], // Modern Set 2
-  ["#86BEEB", "#BD96AD", "#E46A43", "#DBF585", "#9B8E32"], // Modern Set 3
+  ["#E46A43", "#9B8E32", "#BD96AD", "#DBF585", "#86BEEB"],
+  ["#86BEEB", "#DBF585", "#9B8E32", "#BD96AD", "#E46A43"],
+  ["#86BEEB", "#BD96AD", "#E46A43", "#DBF585", "#9B8E32"],
 ];
-
-// Background Colors
 const backgroundColors = [
-  "#E3E4D7", // Light background for Set 1
-  "#EDCCB4", // Deep background for Set 2
-  "#444B37", // Dark background for Set 3
+  "#E3E4D7",
+  "#EDCCB4",
+  "#444B37",
 ];
 
 function resumeAudioContext() {
+    console.log('AudioContext state before resume:', getAudioContext().state);
     if (getAudioContext().state !== 'running') {
         getAudioContext().resume().then(() => {
-            console.log('Audio Context resumed on iOS');
+            console.log('AudioContext resumed successfully');
+        }).catch((err) => {
+            console.error('Failed to resume AudioContext:', err);
         });
     }
 }
@@ -37,12 +36,12 @@ function preload() {
     for (let i = start; i <= end; i++) {
       samplesSets[index].push(
         loadSound(
-          `${prefix}_${i}.mp3`,
+          `${prefix}_${i}.mp3?v=${Date.now()}`,
           () => {
-            console.log(`Loaded ${prefix}_${i}.mp3`);
+            console.log(`Loaded ${prefix}_${i}.mp3?v=${Date.now()}`);
           },
           (err) => {
-            console.error(`Failed to load ${prefix}_${i}.mp3`, err);
+            console.error(`Failed to load ${prefix}_${i}.mp3?v=${Date.now()}`, err);
           }
         )
       );
@@ -63,12 +62,10 @@ function setup() {
   resumeAudioContext();
 }
 
-
-
 function draw() {
   background(backgroundColors[currentSetIndex]);
   animations.forEach((anim) => anim.draw());
-  animations = animations.filter((anim) => anim.alpha > 0); // Remove faded-out animations
+  animations = animations.filter((anim) => anim.alpha > 0);
 }
 
 let isFirstInteraction = true;
@@ -100,23 +97,23 @@ function mousePressed() {
   resumeAudioContext();
 }
 
-function keyPressed() {
-  if (key >= "0" && key <= "9") {
+function keyPressed(event) {
+  if (key === ' ') {
+    event.preventDefault();
+    toggleAnimationSet();
+  } else if (key >= "0" && key <= "9") {
     const index = parseInt(key);
     playAnimation(index);
-  } else if (key === " ") {
-    event.preventDefault();
-    toggleAnimationSet(); // Toggle set with space bar
   }
 }
 
 function handleInteraction(x) {
-  const index = floor(map(x, 0, width, 0, 11)); // Map to 11 blocks (0-9 + toggle)
+  const index = floor(map(x, 0, width, 0, 11));
 
   if (index === 10) {
-    toggleAnimationSet(); // Toggle set if touching the last block
+    toggleAnimationSet();
   } else if (index >= 0 && index < 10) {
-    playAnimation(index); // Play animation corresponding to the block
+    playAnimation(index);
   }
 }
 
@@ -131,7 +128,7 @@ function playAnimation(index) {
     samples[index].play();
     const newAnim = new animationClass(random(colors));
     animations.push(newAnim);
-    if (animations.length > 10) animations.shift(); // Limit animations
+    if (animations.length > 10) animations.shift();
   } else {
     console.error(`Animation class for index ${index} is undefined.`);
   }
@@ -139,15 +136,14 @@ function playAnimation(index) {
 
 function toggleAnimationSet() {
   currentSetIndex = (currentSetIndex + 1) % 3;
-  animations = []; // Clear current animations on toggle
+  animations = [];
 }
 
-// Base Animation Class
 class BaseAnimation {
   constructor(color) {
     this.color = color;
     this.alpha = 255;
-    this.fadeRate = 2; // Fade out rate
+    this.fadeRate = 2;
   }
 
   fadeOut() {
@@ -159,7 +155,6 @@ class BaseAnimation {
   }
 }
 
-// Animation Classes
 class Anim_0 extends BaseAnimation {
   constructor(color) {
     super(color);
@@ -181,13 +176,13 @@ class Anim_0 extends BaseAnimation {
 class Anim_1 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 20; // Start larger
+    this.size = 20;
   }
 
   draw() {
     this.fillWithAlpha();
     rect(width / 4, height / 2 - 25, this.size, 100);
-    this.size += 5; // Faster increase
+    this.size += 5;
     this.fadeOut();
   }
 }
@@ -196,7 +191,7 @@ class Anim_2 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.angle = 0;
-    this.size = 300; // Start larger
+    this.size = 300;
   }
 
   draw() {
@@ -207,7 +202,7 @@ class Anim_2 extends BaseAnimation {
     rectMode(CENTER);
     rect(0, 0, this.size, this.size);
     pop();
-    this.angle += 0.1; // Increased rotation speed
+    this.angle += 0.1;
     this.fadeOut();
   }
 }
@@ -227,13 +222,13 @@ class Anim_3 extends BaseAnimation {
 class Anim_4 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.posy = height + 50; // Starting position
+    this.posy = height + 50;
   }
 
   draw() {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 70);
-    this.posy *= 0.9; // Faster descent
+    this.posy *= 0.9;
     this.fadeOut();
   }
 }
@@ -248,7 +243,7 @@ class Anim_5 extends BaseAnimation {
     this.fillWithAlpha();
     rect(0, this.posy - 50, width, 50);
     rect(0, height - this.posy, width, 50);
-    this.posy *= 0.95; // Faster downward movement
+    this.posy *= 0.95;
     this.fadeOut();
   }
 }
@@ -256,7 +251,7 @@ class Anim_5 extends BaseAnimation {
 class Anim_6 extends BaseAnimation {
   constructor(color) {
     super(color);
-    this.size = 80; // Maintain size
+    this.size = 80;
     this.x = random(width);
     this.y = random(height);
   }
@@ -272,20 +267,17 @@ class Anim_7 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.angle = 0;
-    this.size = 100; // Start larger
-    this.amplitude = 50; // Increased amplitude for more dynamic movement
+    this.size = 100;
+    this.amplitude = 50;
   }
 
   draw() {
     this.fillWithAlpha();
     const x = width / 2 + this.size * cos(this.angle);
-    const y =
-      height / 2 +
-      this.size * sin(this.angle) +
-      this.amplitude * sin(frameCount * 0.1);
-    ellipse(x, y, this.size * 1.5, this.size * 1.5); // Bigger ellipses
-    this.angle += 0.1; // Increased rotation speed
-    this.size += 0.5; // Slightly faster size increase
+    const y = height / 2 + this.size * sin(this.angle) + this.amplitude * sin(frameCount * 0.1);
+    ellipse(x, y, this.size * 1.5, this.size * 1.5);
+    this.angle += 0.1;
+    this.size += 0.5;
     this.fadeOut();
   }
 }
@@ -300,7 +292,7 @@ class Anim_8 extends BaseAnimation {
     this.fillWithAlpha();
     noStroke();
     rect(0, height / 2 - this.height / 2, width, this.height);
-    this.height = min(this.height + 6, height); // Faster growth
+    this.height = min(this.height + 6, height);
     this.fadeOut();
   }
 }
@@ -309,7 +301,7 @@ class Anim_9 extends BaseAnimation {
   constructor(color) {
     super(color);
     this.x = -width;
-    this.speed = 70; // Faster speed
+    this.speed = 70;
     this.alpha = 255;
     this.hasCovered = false;
     this.isActive = true;
@@ -317,18 +309,16 @@ class Anim_9 extends BaseAnimation {
 
   draw() {
     if (!this.isActive) return;
-
     noStroke();
     this.fillWithAlpha();
-
     if (!this.hasCovered) {
       rect(this.x, 0, width, height);
-      this.x += this.speed * 0.1; // Faster transition speed
+      this.x += this.speed * 0.1;
       if (this.x >= 0) {
         this.hasCovered = true;
       }
     } else {
-      this.alpha = max(0, this.alpha - 4); // Faster fade out
+      this.alpha = max(0, this.alpha - 4);
       if (this.alpha === 0) {
         this.isActive = false;
       } else {
@@ -339,7 +329,6 @@ class Anim_9 extends BaseAnimation {
   }
 }
 
-// Map keys to animations
 const Animations = {
   0: Anim_0,
   1: Anim_1,
@@ -357,7 +346,6 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-// Function to detect if the user is on a computer
 function isComputer() {
   return !/Mobi|Android/i.test(navigator.userAgent);
 }
