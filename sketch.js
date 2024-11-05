@@ -24,15 +24,7 @@ function resumeAudioContext() {
     }
 }
 
-function playSilentAudio() {
-    const silence = new p5.SoundFile();
-    silence.playMode('sustain');
-    silence.play();
-    silence.stop();
-}
-
 function preload() {
- playSilentAudio(); 
   const loadSounds = (prefix, start, end, index) => {
     for (let i = start; i <= end; i++) {
       samplesSets[index].push(
@@ -71,26 +63,9 @@ function draw() {
   animations = animations.filter((anim) => anim.alpha > 0); // Remove faded-out animations
 }
 
-let isFirstInteraction = true;
-
 function touchStarted() {
-  if (isFirstInteraction) {
-        reinitializeAudio();
-        isFirstInteraction = false;
-    }
   handleInteraction(touches[0].x);
   resumeAudioContext();
-}
-
-function reinitializeAudio() {
-    samplesSets.forEach((set) => {
-        set.forEach((sample) => {
-            sample.stop();
-            sample.play();
-            sample.stop(); 
-        });
-    });
-    console.log('Audio reinitialized on first interaction');
 }
 
 function mousePressed() {
@@ -120,7 +95,6 @@ function handleInteraction(x) {
 }
 
 function playAnimation(index) {
-  resumeAudioContext();
   const samples = samplesSets[currentSetIndex];
   const colors = colorPalettes[currentSetIndex];
   const animationClass = Animations[index];
