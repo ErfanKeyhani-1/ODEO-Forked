@@ -1,6 +1,6 @@
 # Interactive Sound Design Website
 
-An interactive sound-based website built using p5.js, designed to trigger animations and play sounds based on user interactions (touch, click, or keyboard input). This site has been developed and optimized to work across multiple platforms, including MacBook, iPad, Android, and now iPhone, thanks to specific iOS compatibility adjustments.
+This interactive sound-based website was built using p5.js. It is designed to trigger animations and play sounds based on user interactions (touch, click, or keyboard input). Thanks to specific iOS compatibility adjustments, this site has been developed and optimized to work across multiple platforms, including MacBook, iPad, Android, and now iPhone. 
 
 ## Table of Contents
 
