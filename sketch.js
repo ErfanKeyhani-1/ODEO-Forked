@@ -1,6 +1,7 @@
 let samplesSets = [[], [], []];
 let animations = [];
 let currentSetIndex = 0;
+let silence;
 
 // Brighter Color Palettes for animations
 const colorPalettes = [
@@ -25,6 +26,8 @@ function resumeAudioContext() {
 }
 
 function preload() {
+  silence = new p5.SoundFile();
+  silence.playMode('sustain')
   const loadSounds = (prefix, start, end, index) => {
     for (let i = start; i <= end; i++) {
       samplesSets[index].push(
@@ -53,6 +56,9 @@ function setup() {
   textAlign(CENTER, CENTER);
   textSize(24);
   resumeAudioContext();
+
+  silence.play();
+  setTimeout(() => silence.stop(), 100);
 }
 
 
