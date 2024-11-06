@@ -2,7 +2,7 @@ let samplesSets = [[], [], []];
 let animations = [];
 let currentSetIndex = 0;
 let silence;
-
+let initialized = false;
 // Brighter Color Palettes for animations
 const colorPalettes = [
   ["#E46A43", "#9B8E32", "#BD96AD", "#DBF585", "#86BEEB"], // Modern Set 1
@@ -24,6 +24,20 @@ function resumeAudioContext() {
         });
     }
 }
+
+function initializeAudioContext() {  
+    if (!initialized) {  
+        // Force-play all sounds briefly to initialize the context  
+        samplesSets.flat().forEach((sound) => {  
+            sound.playMode('sustain');  
+            sound.play();  
+            sound.stop();  
+        });  
+        initialized = true;  
+        console.log("Audio initialized");  
+    }  
+}  
+
 
 function preload() {
   silence = new p5.SoundFile();
@@ -61,7 +75,13 @@ function setup() {
   setTimeout(() => silence.stop(), 100);
 }
 
-
+function resumeAudioContext() { 
+    if (getAudioContext().state !== 'running') { 
+        getAudioContext().resume().then(() => {  
+            console.log('Audio Context resumed on iOS');  
+        });  
+    }  
+}  
 
 function draw() {
   background(backgroundColors[currentSetIndex]);
